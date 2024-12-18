@@ -6,37 +6,37 @@
     let logs: Array<{ messageType: string, message: string, currentText: string }> = $state([]);
     let typingInterval: number;
 
-    let queue: Array<() => Promise<void>> = []; // Queue для обработки log вызовов
-    let isProcessing = false; // Флаг обработки очереди
-    let activeLogIndex: number | null = $state(null); // Индекс строки, где должен мигать курсор
+    let queue: Array<() => Promise<void>> = [];
+    let isProcessing = false;
+    let activeLogIndex: number | null = $state(null);
 
-    // log функция с параметром delay
+
     export function log(messageType: any, message: any, delay = 0) {
         queue.push(() => processLog(messageType, message, delay));
         processQueue();
     }
 
-    // Обработка очереди по порядку
+
     async function processQueue() {
-        if (isProcessing) return; // Если уже идет обработка, не начинаем
+        if (isProcessing) return;
         isProcessing = true;
 
         while (queue.length > 0) {
             const task = queue.shift();
-            if (task) await task(); // Ожидаем выполнения текущей записи
+            if (task) await task();
         }
 
         isProcessing = false;
-        activeLogIndex = null; // Сбросить активную строку, когда все завершено
+        activeLogIndex = null;
     }
 
     async function processLog(messageType: any, message: any, delay: number) {
         if (delay > 0) {
-            await new Promise((resolve) => setTimeout(resolve, delay)); // Задержка перед началом
+            await new Promise((resolve) => setTimeout(resolve, delay));
         }
         logs = [...logs, { messageType, message, currentText: '' }];
-        activeLogIndex = logs.length - 1; // Устанавливаем курсор в конец новой строки
-        await typeInMessage(logs.length - 1); // Ожидаем завершения typing анимации
+        activeLogIndex = logs.length - 1;
+        await typeInMessage(logs.length - 1);
     }
 
     function typeInMessage(index: number): Promise<void> {
@@ -54,27 +54,27 @@
                     i++;
                 } else {
                     clearInterval(typingInterval);
-                    resolve(); // Завершаем typing анимацию
+                    resolve();
                 }
-            }, 50); // Скорость типинга
+            }, 50);
         });
     }
 
     onMount(() => {
         if (coldstart) {
-            log('INFO', 'Initializing Raider Terminal v2.077...', 1000);
+            log('INFO', 'Initializing Raider Console v2.077...', 1000);
             log('INFO', 'Checking system integrity...', 1500);
             log('WARNING', 'Detected unauthorized access attempts: 2', 1000);
             log('INFO', 'Loading security protocols...', 0);
             log('ERROR', 'Neural interface synchronization failed!', 3000);
             log('INFO', 'Attempting backup connection...', 0);
-            log('SUCCESS', 'Terminal synchronized', 5000);
+            log('SUCCESS', 'Console synchronized', 5000);
             log('', '.', 500);
             log('', '.', 500);
             log('', '.', 500);
         } else {
             log('INFO', 'Establishing a connection...', 1000);
-            log('SUCCESS', 'Terminal synchronized', 2000);
+            log('SUCCESS', 'Console synchronized', 2000);
             log('', '.', 500);
             log('', '.', 500);
             log('', '.', 500);
@@ -85,6 +85,7 @@
         log('', `Your console is live. New raids, challenges, and loot drops incoming.`, 1000)
         log('', '', 0)
         log('REMINDER', 'Slow raiders get left behind.', 0)
+        log('REMINDER', "Stay tuned, don't miss the updates.", 750)
     });
 </script>
 
