@@ -5,18 +5,19 @@
     const apiClient = new ApiClient();
     let coldstart = $state(false);
     let user: any | undefined = $state(undefined);
-    let error: string | null = $state(null);
+    let error1: string | null = $state(null);
+    let error2: string | null = $state(null);
 
     const fetchUser = async () => {
         try {
-            user = await apiClient.get('/user');
+            user = await apiClient.get('/usesr');
         } catch (err) {
-            error = err.message;
+            error1 = err instanceof Error ? `${err.message}\n${err.stack}` : String(err);
             coldstart = true;
             try {
-                user = (await apiClient.post<{username: string}>('/user', {}));
+                user = (await apiClient.post<{ username: string }>('/usewr', {}));
             } catch (err) {
-                error = err.message;
+                error2 = err instanceof Error ? `${err.message}\n${err.stack}` : String(err);
             }
         }
     };
@@ -25,14 +26,16 @@
 </script>
 
 <div class="w-[100vw] h-[100vh] overflow-x-hidden">
-    {#if error}
-        <p class="text-red-500">{error}</p>
+    {#if error1 || error2}
+        <p class="text-red-500">1: {error1}</p>
+        <br/>
+        <p class="text-red-500">2: {error2}</p>
     {:else if user}
         <div class="h-full">
             <Console username={user.username} {coldstart}></Console>
         </div>
     {:else}
-        <p>{error}</p>
+        <p>...</p>
     {/if}
 </div>
 
