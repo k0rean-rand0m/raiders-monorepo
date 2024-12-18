@@ -41,6 +41,9 @@ func AirdropClaim(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		err = airdropClaim.Create(airdropChosen)
+		resp = struct {
+			Amount int64 `json:"amount"`
+		}{airdropClaim.Amount}
 	case http.MethodGet:
 		var exists bool
 		exists, err = airdropClaim.Exists()
