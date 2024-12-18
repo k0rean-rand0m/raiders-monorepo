@@ -14,6 +14,11 @@ func setupRoutes() {
 	r.Use(middlewares.EnableCORS)
 	r.Use(middlewares.InitData)
 
+	r.PathPrefix("/").Methods("OPTIONS").HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			w.WriteHeader(http.StatusOK)
+		},
+	)
 	r.HandleFunc("/user", httpEndpoints.User).Methods("GET", "POST")
 	r.HandleFunc("/airdrop/claim/{id}", httpEndpoints.AirdropClaim).Methods("GET", "POST")
 
