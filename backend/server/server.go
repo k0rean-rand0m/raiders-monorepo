@@ -11,6 +11,7 @@ import (
 
 func setupRoutes() {
 	r := mux.NewRouter()
+	r.Use(middlewares.EnableCORS)
 	r.Use(middlewares.InitData)
 
 	r.HandleFunc("/user", httpEndpoints.User).Methods("GET", "POST")
