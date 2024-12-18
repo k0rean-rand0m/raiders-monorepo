@@ -11,8 +11,13 @@
         try {
             user = await apiClient.get('/user');
         } catch (err) {
+            error = err.message;
             coldstart = true;
-            user = (await apiClient.post<{username: string}>('/user', {}));
+            try {
+                user = (await apiClient.post<{username: string}>('/user', {}));
+            } catch (err) {
+                error = err.message;
+            }
         }
     };
 
@@ -27,7 +32,7 @@
             <Console username={user.username} {coldstart}></Console>
         </div>
     {:else}
-        <p>...</p>
+        <p>{error}</p>
     {/if}
 </div>
 
