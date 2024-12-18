@@ -20,7 +20,7 @@ func setupRoutes() {
 		},
 	)
 	r.HandleFunc("/user", httpEndpoints.User).Methods("GET", "POST")
-	r.HandleFunc("/airdrop/claim/{id}", httpEndpoints.AirdropClaim).Methods("GET", "POST")
+	//r.HandleFunc("/airdrop/claim/{id}", httpEndpoints.AirdropClaim).Methods("GET", "POST")
 
 	http.Handle("/", r)
 }

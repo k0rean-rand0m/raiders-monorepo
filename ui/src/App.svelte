@@ -1,25 +1,36 @@
 <script lang="ts">
+    import { ApiClient } from './lib/apiClient';
+    import Console from "./lib/Console.svelte";
+
+    const apiClient = new ApiClient();
+    let coldstart = $state(false);
+    let user: any | undefined = $state(undefined);
+    let error: string | null = $state(null);
+
+    const fetchUser = async () => {
+        try {
+            user = await apiClient.get('/user');
+        } catch (err) {
+            coldstart = true;
+            user = (await apiClient.post<{username: string}>('/user', {}));
+        }
+    };
+
+    fetchUser();
 </script>
 
-<main>
-    <div class="bg-black text-white">
-        <!-- Header Content -->
-        <header class="fixed top-0 left-0 w-full bg-black p-4 flex items-center justify-center z-50">
-            <!-- Balance Section -->
-            <div class="text-center">
-                <p class="text-xl font-bold text-green-400">1000 RC</p>
-            </div>
-        </header>
-
-        <!-- Main Content -->
-        <div class="pt-16"> <!-- Adjusted padding for the fixed header -->
-            <p class="text-center text-lg text-gray-300">Main content goes here...</p>
+<div class="w-[100vw] h-[100vh] overflow-x-hidden">
+    {#if error}
+        <p class="text-red-500">{error}</p>
+    {:else if user}
+        <div class="h-full">
+            <Console username={user.username} {coldstart}></Console>
         </div>
-    </div>
-</main>
+    {:else}
+        <p>...</p>
+    {/if}
+</div>
 
 <style>
-  body {
-    background-color: black;
-  }
+
 </style>
