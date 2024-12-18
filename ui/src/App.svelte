@@ -10,12 +10,12 @@
 
     const fetchUser = async () => {
         try {
-            user = await apiClient.get('/usesr');
+            user = await apiClient.get('/user');
         } catch (err) {
             error1 = err instanceof Error ? `${err.message}\n${err.stack}` : String(err);
             coldstart = true;
             try {
-                user = (await apiClient.post<{ username: string }>('/usewr', {}));
+                user = (await apiClient.post<{ username: string }>('/user', {}));
             } catch (err) {
                 error2 = err instanceof Error ? `${err.message}\n${err.stack}` : String(err);
             }
