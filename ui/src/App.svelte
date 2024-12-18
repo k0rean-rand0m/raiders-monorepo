@@ -5,19 +5,17 @@
     const apiClient = new ApiClient();
     let coldstart = $state(false);
     let user: any | undefined = $state(undefined);
-    let error1: string | null = $state(null);
-    let error2: string | null = $state(null);
 
     const fetchUser = async () => {
         try {
             user = await apiClient.get('/user');
         } catch (err) {
-            error1 = err instanceof Error ? `${err.message}\n${err.stack}` : String(err);
+            console.error(err);
             coldstart = true;
             try {
                 user = (await apiClient.post<{ username: string }>('/user', {}));
             } catch (err) {
-                error2 = err instanceof Error ? `${err.message}\n${err.stack}` : String(err);
+                console.error(err);
             }
         }
     };
@@ -26,11 +24,7 @@
 </script>
 
 <div class="w-[100vw] h-[100vh] overflow-x-hidden">
-    {#if error1 || error2}
-        <p class="text-red-500">1: {error1}</p>
-        <br/>
-        <p class="text-red-500">2: {error2}</p>
-    {:else if user}
+    {#if user}
         <div class="h-full">
             <Console username={user.username} {coldstart}></Console>
         </div>
