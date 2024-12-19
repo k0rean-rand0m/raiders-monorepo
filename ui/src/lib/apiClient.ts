@@ -13,6 +13,7 @@ export class ApiClient {
         const url = `${this.baseURL}${endpoint}`;
 
         const initData = window.Telegram?.WebApp?.initData || import.meta.env.VITE_TG_INIT_DATA;
+        console.log(initData);
 
         const options: RequestInit = {
             method,
