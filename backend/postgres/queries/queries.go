@@ -1,7 +1,7 @@
 package queries
 
 var UserGetByTgId = `
-	select * from users where tg_id = $1;
+	select tg_id, username, is_premium, photo_url, balance from users where tg_id = $1;
 `
 
 var UserCreate = `
