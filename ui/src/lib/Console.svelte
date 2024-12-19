@@ -1,7 +1,12 @@
 <script lang="ts">
     import { onMount } from 'svelte';
 
-    let {username, coldstart}: {username: string, coldstart: boolean} = $props();
+    let {
+        user,
+        coldstart
+    }: {user: {username: string, balance: number},
+        coldstart: boolean
+    } = $props();
 
     let logs: Array<{ messageType: string, message: string, currentText: string }> = $state([]);
     let typingInterval: number;
@@ -73,19 +78,20 @@
             log('', '.', 500);
             log('', '.', 500);
         } else {
-            log('INFO', 'Establishing a connection...', 1000);
-            log('SUCCESS', 'Console synchronized', 2000);
-            log('', '.', 500);
-            log('', '.', 500);
-            log('', '.', 500);
+            log('INFO', 'Console synchronized', 1000);
         }
 
-        log('WELCOME', `Welcome, ${username}!`, 1000)
-        log('', '', 500)
-        log('', `Your console is live. New raids, challenges, and loot drops incoming.`, 1000)
-        log('', '', 0)
-        log('REMINDER', 'Slow raiders get left behind.', 0)
-        log('REMINDER', "Stay tuned, don't miss the updates.", 750)
+        log('WELCOME', `Welcome, ${user.username}!`, 1000);
+        log('', '', 500);
+        log('', `Your console is live. New raids, challenges, and loot drops are incoming.`, 1000);
+        log('', '', 0);
+        log('INFO', 'Installing treasury extension...', 0);
+        log('SUCCESS', 'Installation complete.', 3000);
+        log('', '', 0);
+        log('INFO', `Your balance: ${user.balance} $RDRS`, 750);
+        log('', '', 500);
+        log('REMINDER', 'Today, you left behind the slow raiders.', 0);
+        log('REMINDER', 'Keep going!', 750);
     });
 </script>
 

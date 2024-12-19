@@ -13,7 +13,8 @@
             console.error(err);
             coldstart = true;
             try {
-                user = (await apiClient.post<{ username: string }>('/user', {}));
+                user = (await apiClient.post<{ username: string, balance: number }>('/user', {}));
+                console.log(user);
             } catch (err) {
                 console.error(err);
             }
@@ -26,7 +27,7 @@
 <div class="w-[100vw] h-[100vh] overflow-x-hidden">
     {#if user}
         <div class="h-full">
-            <Console username={user.username} {coldstart}></Console>
+            <Console {user} {coldstart}></Console>
         </div>
     {:else}
         <p>...</p>
