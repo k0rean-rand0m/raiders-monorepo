@@ -3,9 +3,6 @@
     class="console"
     @submit.prevent="onSubmit"
   >
-    <pre>
-      {{ initData }}
-    </pre>
     <div
       v-for="(log, index) in logs"
       :key="index"
@@ -49,7 +46,6 @@ interface Log {
   currentText: string;
 }
 
-const initData = window.Telegram?.WebApp?.initData;
 // Моки
 const user = ref<{ username: string, balance: number }>();
 const coldstart = ref(false);
@@ -356,14 +352,16 @@ onBeforeMount(async () => {
 
 input {
   padding: 0;
-  border: none;
   background: transparent;
   outline: none;
   font-size: 16px;
-  width: 1ch;
+  width: 4ch;
   text-align: left;
+  border: none;
+  border-bottom: 1px solid #00FFFF;
   overflow: hidden;
   caret-color: transparent;
+  margin-right: 4px;
 }
 
 @keyframes blink {
