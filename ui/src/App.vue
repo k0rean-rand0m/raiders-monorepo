@@ -236,6 +236,7 @@ const goAirdrop = async () => {
     log('SUCCESS', 'Success! The loot is yours. $RDRS Token have been added.');
     log('REMINDER', 'Today, you left behind the slow raiders.');
     log('REMINDER', 'Keep going');
+    document.activeElement?.blur();
   } catch (error) {
     console.error(error);
     log('ERROR', 'SYSTEM ERROR' + ' ' + JSON.stringify(error))
