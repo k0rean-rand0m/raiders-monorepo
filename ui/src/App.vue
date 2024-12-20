@@ -3,6 +3,9 @@
     class="console"
     @submit.prevent="onSubmit"
   >
+      <pre>
+    {{ initData }}
+  </pre>
     <div
       v-for="(log, index) in logs"
       :key="index"
@@ -44,6 +47,8 @@ interface Log {
   message: string;
   currentText: string;
 }
+
+const initData =  indow.Telegram?.WebApp?.initData;
 
 // Моки
 const user = ref<{ username: string, balance: number }>();
