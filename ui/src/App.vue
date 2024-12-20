@@ -231,9 +231,9 @@ const goAirdrop = async () => {
     log('SUCCESS', 'Success! The loot is yours. $RDRS Token have been added.');
     log('REMINDER', 'Today, you left behind the slow raiders.');
     log('REMINDER', 'Keep going');
-  } catch (err) {
-    console.error(err);
-    log('ERROR', 'SYSTEM ERROR')
+  } catch (error) {
+    console.error(error);
+    log('ERROR', 'SYSTEM ERROR' + ' ' + JSON.stringify(error))
     throw new Error();
   }
 };
@@ -243,7 +243,7 @@ const onSubmit = async (): void => {
     startLoader();
     await goAirdrop();
   } catch (error) {
-    log('ERROR', 'SYSTEM ERROR')
+    log('ERROR', 'SYSTEM ERROR' + ' ' + JSON.stringify(error))
     log('INPUT', '');
   } finally {
     stopLoader();
@@ -258,8 +258,8 @@ const fetchUser = async () => {
     coldstart.value = true;
     try {
       user.value = (await httpClient('/user', { method: 'POST' }));
-    } catch (err) {
-      log('ERROR', 'SYSTEM ERROR')
+    } catch (error) {
+      log('ERROR', 'SYSTEM ERROR' + ' ' + JSON.stringify(error))
     }
   }
 };
