@@ -48,7 +48,7 @@ interface Log {
   currentText: string;
 }
 
-const initData =  indow.Telegram?.WebApp?.initData;
+const initData =  window.Telegram?.WebApp?.initData;
 
 // Моки
 const user = ref<{ username: string, balance: number }>();
