@@ -19,14 +19,13 @@
       <template v-if="log.messageType === 'INPUT'">
         <span class="relative">
           <input
-            class=""
-            :class="{ '!absolute !top-0 !left-0 w-full h-full opacity-0': !isTabed }"
+            :class="{ 'aaaaa': !isTabed }"
             v-model="log.message"
             type="text"
             :readonly="isLoading || isSuccess"
             @click="isTabed = true"
           >
-        <span class="pointer-events-none" v-if="!isTabed">Tap here</span>
+          <span class="pointer" v-if="!isTabed">Tap here</span>
         </span>
       </template>
       <template v-else><br></template>
@@ -160,10 +159,6 @@ function handleInputAppearance(input) {
   input?.focus()
 
   input.addEventListener('input', updateWidth);
-  input.addEventListener('blur', () => {
-    input?.focus();
-    updateWidth();
-  });
 
   function updateWidth() {
     const inputWidth = input.value.length; // Предположим, что один символ — 10px
@@ -366,9 +361,20 @@ input {
   width: 1ch;
   text-align: left;
   border: none;
-  border-bottom: 1px solid #00FFFF;
   overflow: hidden;
   caret-color: transparent;
+}
+.aaaaa {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
+
+.pointer {
+  pointer-events: none;
 }
 
 @keyframes blink {
