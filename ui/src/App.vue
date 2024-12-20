@@ -18,10 +18,12 @@
       </template>
       <template v-if="log.messageType === 'INPUT'">
         <input
+          v-if="isTabed"
           v-model="log.message"
           type="text"
           :readonly="isLoading || isSuccess"
         >
+        <span v-if="!isTabed" @click="isTabed = true">Tap here</span>
       </template>
       <template v-else><br></template>
 
@@ -105,6 +107,8 @@ function typeInMessage(index: number): Promise<void> {
     }, 20);
   });
 }
+
+const isTabed = ref(false);
 
 const isAllReady = ref(false);
 
@@ -355,13 +359,12 @@ input {
   background: transparent;
   outline: none;
   font-size: 16px;
-  width: 4ch;
+  width: 1ch;
   text-align: left;
   border: none;
   border-bottom: 1px solid #00FFFF;
   overflow: hidden;
   caret-color: transparent;
-  margin-right: 4px;
 }
 
 @keyframes blink {
