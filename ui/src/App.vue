@@ -239,7 +239,7 @@ const goAirdrop = async () => {
     document.activeElement?.blur();
   } catch (error) {
     console.error(error);
-    log('ERROR', 'SYSTEM ERROR' + ' ' + JSON.stringify(error))
+    log('ERROR', 'SYSTEM ERROR' + ' ')
     throw new Error();
   }
 };
@@ -249,7 +249,7 @@ const onSubmit = async (): void => {
     startLoader();
     await goAirdrop();
   } catch (error) {
-    log('ERROR', 'SYSTEM ERROR' + ' ' + JSON.stringify(error))
+    log('ERROR', 'SYSTEM ERROR' + ' ')
     log('INPUT', '');
   } finally {
     stopLoader();
@@ -265,7 +265,7 @@ const fetchUser = async () => {
     try {
       user.value = (await httpClient('/user', { method: 'POST' }));
     } catch (error) {
-      log('ERROR', 'SYSTEM ERROR' + ' ' + JSON.stringify(error))
+      log('ERROR', 'SYSTEM ERROR' + ' ')
     }
   }
 };
