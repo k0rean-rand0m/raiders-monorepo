@@ -17,13 +17,17 @@
         {{ log.currentText }}
       </template>
       <template v-if="log.messageType === 'INPUT'">
-        <input
-          v-if="isTabed"
-          v-model="log.message"
-          type="text"
-          :readonly="isLoading || isSuccess"
-        >
-        <span v-if="!isTabed" @click="isTabed = true">Tap here</span>
+        <span class="relative">
+          <input
+            v-if="isTabed"
+            class="absolute top-0 left-0 w-full h-full"
+            v-model="log.message"
+            type="text"
+            :readonly="isLoading || isSuccess"
+            @click="isTabed = true"
+          >
+        <span class="pointer-events-none" v-if="!isTabed">Tap here</span>
+        </span>
       </template>
       <template v-else><br></template>
 
