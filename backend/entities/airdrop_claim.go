@@ -2,7 +2,6 @@ package entities
 
 import (
 	"errors"
-	"github.com/jackc/pgx/v4"
 	db "github.com/k0rean-rand0m/raiders-monorepo/backend/postgres"
 	"github.com/k0rean-rand0m/raiders-monorepo/backend/postgres/queries"
 )
@@ -13,31 +12,21 @@ type AirdropClaim struct {
 	Amount    int64 `json:"amount"`
 }
 
-var amounts = [3]int64{75, 50, 100}
-
-func (ac *AirdropClaim) Create(chosen int64) (err error) {
-	if chosen > 2 {
-		return errors.New("invalid chosen id")
+func (ac *AirdropClaim) Create(code string) (err error) {
+	if code != "R1D3R" {
+		return errors.New("wrong code")
 	}
-	err = db.QueryRow(
-		queries.AirdropClaim,
-		ac.UserTgID,
-		ac.AirdropID,
-		amounts[chosen],
-	).Scan(&ac.Amount)
 
+	var success bool
+	err = db.QueryRow(queries.AirdropClaim, ac.UserTgID, ac.AirdropID, ac.Amount).Scan(&success)
 	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			return errors.New("already claimed")
-		}
 		return err
 	}
 
 	return
 }
 
-func (ac *AirdropClaim) Exists() (exists bool, err error) {
-	res := db.QueryRow(queries.IsAirdropClaimed, ac.UserTgID, ac.AirdropID)
-	err = res.Scan(&exists)
+func (ac *AirdropClaim) Eligible() (status string, err error) {
+	err = db.QueryRow(queries.AirdropClaimEligible, ac.UserTgID, ac.AirdropID).Scan(&status)
 	return
 }
