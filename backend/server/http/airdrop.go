@@ -1,6 +1,7 @@
 package http
 
 import (
+	"encoding/json"
 	"github.com/gorilla/mux"
 	e "github.com/k0rean-rand0m/raiders-monorepo/backend/entities"
 	"github.com/k0rean-rand0m/raiders-monorepo/backend/helpers"
@@ -10,52 +11,73 @@ import (
 	"strconv"
 )
 
-func AirdropClaim(w http.ResponseWriter, r *http.Request) {
-	var err error
-	var errCode = http.StatusInternalServerError
-	var resp any
-
+func AirdropStatus(w http.ResponseWriter, r *http.Request) {
 	initData, ok := r.Context().Value(middlewares.InitDataContextKey).(initdata.InitData)
 	if !ok {
-		http.Error(w, "init data was not provided to handler", errCode)
+		http.Error(w, "init data was not provided to handler", http.StatusInternalServerError)
 		return
 	}
-
 	airdropId, err := strconv.ParseInt(mux.Vars(r)["id"], 10, 64)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	airdropClaim := &e.AirdropClaim{
+	ac := e.AirdropClaim{
 		UserTgID:  initData.User.ID,
 		AirdropID: airdropId,
+		Amount:    500,
 	}
 
-	switch r.Method {
-	case http.MethodPost:
-		var airdropChosen int64
-		airdropChosen, err = strconv.ParseInt(r.URL.Query().Get("chosen"), 10, 64)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
-		err = airdropClaim.Create(airdropChosen)
-		resp = struct {
-			Amount int64 `json:"amount"`
-		}{airdropClaim.Amount}
-	case http.MethodGet:
-		var exists bool
-		exists, err = airdropClaim.Exists()
-		resp = struct {
-			Exists bool `json:"exists"`
-		}{exists}
-	}
-
+	status, err := ac.Eligible()
 	if err != nil {
-		http.Error(w, err.Error(), errCode)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	helpers.HttpResponse(w, resp)
+	helpers.HttpResponse(w, struct {
+		Status string `json:"status"`
+	}{status})
+}
+
+func AirdropClaim(w http.ResponseWriter, r *http.Request) {
+	initData, ok := r.Context().Value(middlewares.InitDataContextKey).(initdata.InitData)
+	if !ok {
+		http.Error(w, "init data was not provided to handler", http.StatusInternalServerError)
+		return
+	}
+	airdropId, err := strconv.ParseInt(mux.Vars(r)["id"], 10, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	ac := e.AirdropClaim{
+		UserTgID:  initData.User.ID,
+		AirdropID: airdropId,
+		Amount:    500,
+	}
+
+	body := struct {
+		Code string `json:"code"`
+	}{}
+	err = json.NewDecoder(r.Body).Decode(&body)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	err = ac.Create(body.Code)
+	if err != nil {
+		helpers.HttpResponse(w, struct {
+			Success bool   `json:"success"`
+			Details string `json:"details"`
+		}{false, err.Error()})
+		return
+	}
+
+	helpers.HttpResponse(w, struct {
+		Success bool   `json:"success"`
+		Details string `json:"details"`
+	}{true, ""})
 }
