@@ -14,7 +14,5 @@ export const addUserToAxiosRequest = (config: AxiosRequestConfig): AxiosRequestC
     'X-Telegram-Init-Data': initData || ''
   };
 
-
-
   return config;
 };
