@@ -3,9 +3,6 @@
     class="console"
     @submit.prevent="onSubmit"
   >
-      <pre>
-    {{ initData }}
-  </pre>
     <div
       v-for="(log, index) in logs"
       :key="index"
@@ -26,6 +23,7 @@
           :readonly="isLoading || isSuccess"
         >
       </template>
+      <template v-else><br></template>
 
       <template v-if="activeLogIndex === index || log.messageType === 'INPUT' && !isSuccess">
         <span v-if="!isLoading" class="cursor">_</span>
@@ -231,6 +229,7 @@ const goAirdrop = async () => {
     }
 
     isSuccess.value = true;
+    log('', '');
     log('SUCCESS', 'Success! The loot is yours. $RDRS Token have been added.');
     log('REMINDER', 'Today, you left behind the slow raiders.');
     log('REMINDER', 'Keep going');
