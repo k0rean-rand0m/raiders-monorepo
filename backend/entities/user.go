@@ -21,7 +21,7 @@ func UserGet(tgId int64) (u *User, err error) {
 	u = &User{}
 	err = res.Scan(&u.TgId, &u.Username, &u.IsPremium, &u.PhotoUrl, &u.Balance)
 	if err != nil {
-		log.Error(err)
+		log.Error("User get: ", err)
 		return nil, fmt.Errorf("user not found: %d", tgId)
 	}
 	return
@@ -30,7 +30,7 @@ func UserGet(tgId int64) (u *User, err error) {
 func (u *User) Create() error {
 	_, err := db.Execute(queries.UserCreate, u.TgId, u.Username, u.IsPremium, u.PhotoUrl)
 	if err != nil {
-		log.Error(err)
+		log.Error("User create: ", err)
 		return fmt.Errorf("error creating user: %w", err)
 	}
 	return nil

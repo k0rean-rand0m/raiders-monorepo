@@ -23,10 +23,6 @@ var AirdropClaimEligible = `
            end as status;
 `
 
-var AirdropGetClaim = `
-	select user_tg_id, airdrop_id, amount from airdrop_claim where user_tg_id = $1 and airdrop_id = $2;
-`
-
 var AirdropClaim = `
 	with claim as (
     insert

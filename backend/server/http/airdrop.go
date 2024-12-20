@@ -33,7 +33,7 @@ func AirdropStatus(w http.ResponseWriter, r *http.Request) {
 
 	status, err := ac.Eligible()
 	if err != nil {
-		log.Error(err)
+		log.Error("Airdrop eligible: ", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

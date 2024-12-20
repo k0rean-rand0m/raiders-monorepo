@@ -21,8 +21,7 @@ func (ac *AirdropClaim) Create(code string) (err error) {
 	var success bool
 	err = db.QueryRow(queries.AirdropClaim, ac.UserTgID, ac.AirdropID, ac.Amount).Scan(&success)
 	if err != nil {
-		log.Error(err)
-		log.Error(err)
+		log.Error("Airdrop claim: ", err)
 		return err
 	}
 
