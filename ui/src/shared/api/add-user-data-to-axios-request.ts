@@ -9,10 +9,12 @@ export const addUserToAxiosRequest = (config: AxiosRequestConfig): AxiosRequestC
 
   const initData = window.Telegram?.WebApp?.initData || import.meta.env.VITE_TG_INIT_DATA;
 
-    config.headers = {
-      'Content-Type': 'application/json',
-      'X-Telegram-Init-Data': initData || ''
-    };
+  config.headers = {
+    'Content-Type': 'application/json',
+    'X-Telegram-Init-Data': initData || ''
+  };
+
+
 
   return config;
 };
