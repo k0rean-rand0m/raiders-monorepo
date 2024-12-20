@@ -273,7 +273,11 @@ const fetchUser = async () => {
 const status = ref<'eligible'| 'expired' | 'claimed'>();
 
 const fetchStatus = async () => {
-  status.value = (await httpClient(`/airdrop/claim/2/status`))?.status;
+  try {
+    status.value = (await httpClient(`/airdrop/claim/2/status`))?.status;
+  } catch (error) {
+    log('ERROR', 'Something went wrong. Reload page or contact admins.')
+  }
 }
 
 watch(isAllReady, () => {
