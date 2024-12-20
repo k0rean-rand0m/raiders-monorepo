@@ -48,8 +48,6 @@ interface Log {
   currentText: string;
 }
 
-const initData =  window.Telegram?.WebApp?.initData;
-
 // Моки
 const user = ref<{ username: string, balance: number }>();
 const coldstart = ref(false);
