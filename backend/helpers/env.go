@@ -2,12 +2,12 @@ package helpers
 
 import (
 	"github.com/joho/godotenv"
-	"log"
+	log "github.com/sirupsen/logrus"
 )
 
 func LoadEnv() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Println(err)
+		log.Error(err)
 	}
 }

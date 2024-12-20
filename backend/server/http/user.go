@@ -4,6 +4,7 @@ import (
 	e "github.com/k0rean-rand0m/raiders-monorepo/backend/entities"
 	"github.com/k0rean-rand0m/raiders-monorepo/backend/helpers"
 	"github.com/k0rean-rand0m/raiders-monorepo/backend/server/middlewares"
+	log "github.com/sirupsen/logrus"
 	initdata "github.com/telegram-mini-apps/init-data-golang"
 	"net/http"
 )
@@ -33,6 +34,7 @@ func User(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err != nil {
+		log.Error(err)
 		http.Error(w, err.Error(), errCode)
 		return
 	}

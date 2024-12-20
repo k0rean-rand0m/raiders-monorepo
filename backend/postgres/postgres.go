@@ -28,6 +28,7 @@ func Connect(connectionString string) {
 		connectionString,
 	)
 	if err != nil {
+		log.Error(err)
 		panic(err)
 	} else {
 		Instance.pool = connection

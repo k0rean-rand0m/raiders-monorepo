@@ -4,6 +4,7 @@ import (
 	"errors"
 	db "github.com/k0rean-rand0m/raiders-monorepo/backend/postgres"
 	"github.com/k0rean-rand0m/raiders-monorepo/backend/postgres/queries"
+	log "github.com/sirupsen/logrus"
 )
 
 type AirdropClaim struct {
@@ -20,6 +21,8 @@ func (ac *AirdropClaim) Create(code string) (err error) {
 	var success bool
 	err = db.QueryRow(queries.AirdropClaim, ac.UserTgID, ac.AirdropID, ac.Amount).Scan(&success)
 	if err != nil {
+		log.Error(err)
+		log.Error(err)
 		return err
 	}
 

@@ -6,6 +6,7 @@ import (
 	e "github.com/k0rean-rand0m/raiders-monorepo/backend/entities"
 	"github.com/k0rean-rand0m/raiders-monorepo/backend/helpers"
 	"github.com/k0rean-rand0m/raiders-monorepo/backend/server/middlewares"
+	log "github.com/sirupsen/logrus"
 	initdata "github.com/telegram-mini-apps/init-data-golang"
 	"net/http"
 	"strconv"
@@ -19,6 +20,7 @@ func AirdropStatus(w http.ResponseWriter, r *http.Request) {
 	}
 	airdropId, err := strconv.ParseInt(mux.Vars(r)["id"], 10, 64)
 	if err != nil {
+		log.Error(err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -31,6 +33,7 @@ func AirdropStatus(w http.ResponseWriter, r *http.Request) {
 
 	status, err := ac.Eligible()
 	if err != nil {
+		log.Error(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -48,6 +51,7 @@ func AirdropClaim(w http.ResponseWriter, r *http.Request) {
 	}
 	airdropId, err := strconv.ParseInt(mux.Vars(r)["id"], 10, 64)
 	if err != nil {
+		log.Error(err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -63,12 +67,14 @@ func AirdropClaim(w http.ResponseWriter, r *http.Request) {
 	}{}
 	err = json.NewDecoder(r.Body).Decode(&body)
 	if err != nil {
+		log.Error(err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	err = ac.Create(body.Code)
 	if err != nil {
+		log.Error(err)
 		helpers.HttpResponse(w, struct {
 			Success bool   `json:"success"`
 			Details string `json:"details"`

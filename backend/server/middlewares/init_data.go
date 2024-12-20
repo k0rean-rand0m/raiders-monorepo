@@ -2,6 +2,7 @@ package middlewares
 
 import (
 	"context"
+	log "github.com/sirupsen/logrus"
 	initdata "github.com/telegram-mini-apps/init-data-golang"
 	"net/http"
 	"os"
@@ -22,12 +23,14 @@ func InitData(next http.Handler) http.Handler {
 
 		err := initdata.Validate(initDataHeader, token, expire)
 		if err != nil {
+			log.Error(err)
 			http.Error(w, err.Error(), http.StatusForbidden)
 			return
 		}
 
 		initData, err := initdata.Parse(initDataHeader)
 		if err != nil {
+			log.Error(err)
 			http.Error(w, "bad request: init data validated but can not be parsed", http.StatusInternalServerError)
 			return
 		}
