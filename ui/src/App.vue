@@ -17,11 +17,16 @@
         {{ log.currentText }}
       </template>
       <template v-if="log.messageType === 'INPUT'">
-        <input
-          v-model="log.message"
-          type="text"
-          :readonly="isLoading || isSuccess"
-        >
+        <span class="relative">
+          <input
+            :class="{ 'aaaaa': !isTabed }"
+            v-model="log.message"
+            type="text"
+            :readonly="isLoading || isSuccess"
+            @click="isTabed = true"
+          >
+          <span class="pointer" v-if="!isTabed">Tap here</span>
+        </span>
       </template>
       <template v-else><br></template>
 
@@ -106,6 +111,8 @@ function typeInMessage(index: number): Promise<void> {
   });
 }
 
+const isTabed = ref(false);
+
 const isAllReady = ref(false);
 
 // Lifecycle
@@ -152,10 +159,6 @@ function handleInputAppearance(input) {
   input?.focus()
 
   input.addEventListener('input', updateWidth);
-  input.addEventListener('blur', () => {
-    input?.focus();
-    updateWidth();
-  });
 
   function updateWidth() {
     const inputWidth = input.value.length; // Предположим, что один символ — 10px
@@ -233,6 +236,7 @@ const goAirdrop = async () => {
     log('SUCCESS', 'Success! The loot is yours. $RDRS Token have been added.');
     log('REMINDER', 'Today, you left behind the slow raiders.');
     log('REMINDER', 'Keep going');
+    document.activeElement?.blur();
   } catch (error) {
     console.error(error);
     log('ERROR', 'SYSTEM ERROR' + ' ' + JSON.stringify(error))
@@ -352,14 +356,26 @@ onBeforeMount(async () => {
 
 input {
   padding: 0;
-  border: none;
   background: transparent;
   outline: none;
   font-size: 16px;
   width: 1ch;
   text-align: left;
+  border: none;
   overflow: hidden;
   caret-color: transparent;
+}
+.aaaaa {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
+
+.pointer {
+  pointer-events: none;
 }
 
 @keyframes blink {
