@@ -1,13 +1,7 @@
 import { defineConfig } from 'vite'
-import { svelte } from '@sveltejs/vite-plugin-svelte'
+import vue from '@vitejs/plugin-vue'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [
-      svelte({
-          compilerOptions: {
-              customElement: true, // Включите эту опцию
-          },
-      }),
-  ],
+  plugins: [vue()],
 })
