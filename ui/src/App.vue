@@ -19,8 +19,8 @@
       <template v-if="log.messageType === 'INPUT'">
         <span class="relative">
           <input
-            v-if="isTabed"
-            class="absolute top-0 left-0 w-full h-full"
+            class=""
+            :class="{ '!absolute !top-0 !left-0 w-full h-full opacity-0': !isTabed }"
             v-model="log.message"
             type="text"
             :readonly="isLoading || isSuccess"
