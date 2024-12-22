@@ -1,8 +1,5 @@
 <template>
-  <form
-    class="console"
-    @submit.prevent="onSubmit"
-  >
+  <div class="console">
     <div
       v-for="(log, index) in logs"
       :key="index"
@@ -29,27 +26,13 @@
         </span>
       </template>
       <template v-else><br></template>
-
-      <template v-if="activeLogIndex === index || log.messageType === 'INPUT' && !isSuccess">
-        <span v-if="!isLoading" class="cursor">_</span>
-        <span v-else class="loader">{{ loaderFrame }}</span>
-      </template>
     </div>
-  </form>
-  <template v-if="isLoading && (!user || !status)">
-    <span class="loader">{{ loaderFrame }}</span>
-  </template>
+  </div>
 </template>
 
 <script lang="ts" setup>
-import { onBeforeMount, onMounted, ref, watch } from 'vue';
+import { onBeforeMount, ref } from 'vue';
 import { httpClient } from './shared/api';
-
-interface Log {
-  messageType: string;
-  message: string;
-  currentText: string;
-}
 
 // Моки
 const user = ref<{ username: string, balance: number }>();
@@ -187,73 +170,6 @@ const observer = new MutationObserver((mutationsList) => {
 
 observer.observe(document.body, { childList: true, subtree: true, attributes: true, });
 
-const isLoading = ref(false);
-const isSuccess = ref(false);
-// Создаем реактивные переменные
-const loaderFrame = ref('|'); // Начальный кадр анимации
-const frames = ['|', '/', '—', '|', '—', '\\']; // Массив кадров для анимации
-let currentFrameIndex = 0; // Индекс текущего кадра
-let loaderInterval: number | undefined = undefined; // Интервал для анимации
-
-// Функция для старта анимации
-const startLoader = () => {
-  isLoading.value = true;
-
-  loaderInterval = setInterval(() => {
-    loaderFrame.value = frames[currentFrameIndex]; // Обновляем кадр
-    currentFrameIndex = (currentFrameIndex + 1) % frames.length; // Перемещаемся по массиву кадров
-  }, 200); // Обновляем каждый 200 миллисекунд
-};
-
-// Функция для остановки лоадера
-const stopLoader = () => {
-  if (loaderInterval) {
-    clearInterval(loaderInterval); // Останавливаем анимацию
-  }
-  isLoading.value = false; // Останавливаем отображение лоадера
-};
-
-const goAirdrop = async () => {
-  try {
-    const input = logs.value.find(({ messageType }) => messageType === 'INPUT');
-    const success = (await httpClient('/airdrop/claim/2', { method: 'POST', data: { code: input?.message  } }))?.success;
-
-    if (!success) {
-      log('ERROR', 'Incorrect code, Raider. Double-check your entry and move fast—your window is closing!');
-      const input = logs.value.find(({ messageType }) => messageType === 'INPUT');
-
-      if (!input) return;
-
-      input.message = '';
-
-      return;
-    }
-
-    isSuccess.value = true;
-    log('', '');
-    log('SUCCESS', 'Success! The loot is yours. $RDRS Token have been added.');
-    log('REMINDER', 'Today, you left behind the slow raiders.');
-    log('REMINDER', 'Keep going');
-    document.activeElement?.blur();
-  } catch (error) {
-    console.error(error);
-    log('ERROR', 'SYSTEM ERROR' + ' ')
-    throw new Error();
-  }
-};
-
-const onSubmit = async (): void => {
-  try {
-    startLoader();
-    await goAirdrop();
-  } catch (error) {
-    log('ERROR', 'SYSTEM ERROR' + ' ')
-    log('INPUT', '');
-  } finally {
-    stopLoader();
-  }
-};
-
 const fetchUser = async () => {
   try {
     user.value = await httpClient('/user');
@@ -268,41 +184,9 @@ const fetchUser = async () => {
   }
 };
 
-const status = ref<'eligible'| 'expired' | 'claimed'>();
-
-const fetchStatus = async () => {
-  try {
-    status.value = (await httpClient(`/airdrop/claim/2/status`))?.status;
-  } catch (error) {
-    log('ERROR', 'Something went wrong. Reload page or contact admins')
-  }
-}
-
-watch(isAllReady, () => {
-  if (status.value === 'claimed') {
-    log('SUCCESS', 'Success! The loot is yours. $RDRS Token have been added.')
-  }
-
-  if (status.value === 'expired') {
-    log('ERROR', 'Too slow, Raider. The loot’s already been claimed. Speed is survival. Try again next time!\n')
-  }
-
-  if (status.value === 'eligible') {
-    log('INPUT', '')
-  }
-});
-
-
 onBeforeMount(async () => {
-  startLoader();
   await fetchUser();
   afterAll();
-
-  await Promise.all([
-    fetchStatus()
-  ]);
-
-  stopLoader();
 });
 </script>
 
