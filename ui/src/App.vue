@@ -10,20 +10,8 @@
           [{{ log.messageType.toUpperCase() }}]
         </span>
       </template>
-      <template v-if="log.messageType !== 'INPUT' && log.currentText">
+      <template v-if="log.currentText">
         {{ log.currentText }}
-      </template>
-      <template v-if="log.messageType === 'INPUT'">
-        <span class="relative">
-          <input
-            :class="{ 'aaaaa': !isTabed }"
-            v-model="log.message"
-            type="text"
-            :readonly="isLoading || isSuccess"
-            @click="isTabed = true"
-          >
-          <span class="pointer" v-if="!isTabed">Tap here</span>
-        </span>
       </template>
       <template v-else><br></template>
     </div>
