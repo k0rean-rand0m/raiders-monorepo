@@ -134,12 +134,10 @@ const afterAll = (() => {
 
   logss.push(
     { type: 'WELCOME', message: `Welcome, ${user.value.username}!`, delay: 1000 },
-    { type: '', message: '', delay: 500 },
-    { type: '', message: 'Your console is live. New raids, challenges, and loot drops are incoming.', delay: 1000 },
-    { type: '', message: '', delay: 0 },
     { type: 'INFO', message: `Your balance: ${user.value.balance} $RDRS`, delay: 750 },
     { type: '', message: '', delay: 500 },
-    { type: 'INFO', message: 'Enter the secret code to claim 500 $RDRS Tokens.  Don’t waste time—tokens wait for no one.', delay: 750 },
+    { type: 'WARNING', message: `Meme War Initiated`, delay: 750 },
+    { type: '', message: `follow the instructions in the post`, delay: 750 },
   );
 
   let delay = 0;
@@ -239,7 +237,7 @@ const goAirdrop = async () => {
     document.activeElement?.blur();
   } catch (error) {
     console.error(error);
-    log('ERROR', 'SYSTEM ERROR' + ' ' + JSON.stringify(error))
+    log('ERROR', 'SYSTEM ERROR' + ' ')
     throw new Error();
   }
 };
@@ -249,7 +247,7 @@ const onSubmit = async (): void => {
     startLoader();
     await goAirdrop();
   } catch (error) {
-    log('ERROR', 'SYSTEM ERROR' + ' ' + JSON.stringify(error))
+    log('ERROR', 'SYSTEM ERROR' + ' ')
     log('INPUT', '');
   } finally {
     stopLoader();
@@ -265,7 +263,7 @@ const fetchUser = async () => {
     try {
       user.value = (await httpClient('/user', { method: 'POST' }));
     } catch (error) {
-      log('ERROR', 'SYSTEM ERROR' + ' ' + JSON.stringify(error))
+      log('ERROR', 'SYSTEM ERROR' + ' ')
     }
   }
 };
@@ -273,7 +271,11 @@ const fetchUser = async () => {
 const status = ref<'eligible'| 'expired' | 'claimed'>();
 
 const fetchStatus = async () => {
-  status.value = (await httpClient(`/airdrop/claim/2/status`))?.status;
+  try {
+    status.value = (await httpClient(`/airdrop/claim/2/status`))?.status;
+  } catch (error) {
+    log('ERROR', 'Something went wrong. Reload page or contact admins')
+  }
 }
 
 watch(isAllReady, () => {
