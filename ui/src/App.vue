@@ -107,8 +107,12 @@ const afterAll = (() => {
     { type: 'WELCOME', message: `Welcome, ${user.value.username}!`, delay: 1000 },
     { type: 'INFO', message: `Your balance: ${user.value.balance} $RDRS`, delay: 750 },
     { type: '', message: '', delay: 500 },
-    { type: 'WARNING', message: `Meme War Initiated`, delay: 750 },
-    { type: '', message: `follow the instructions in the post`, delay: 750 },
+    { type: 'INFO', message: `Checking your status...`, delay: 750 },
+    { type: '', message: '.', delay: 750 },
+    { type: '', message: '.', delay: 750 },
+    { type: '', message: '.', delay: 750 },
+    { type: 'SUCCESS', message: `Thank you!`, delay: 750 },
+    { type: 'INFO', message: `You are registered as an Early Bird, and your tokens will be credited within 24 hours.`, delay: 750 },
   );
 
   let delay = 0;
