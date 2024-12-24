@@ -107,12 +107,19 @@ const afterAll = (() => {
     { type: 'WELCOME', message: `Welcome, ${user.value.username}!`, delay: 1000 },
     { type: 'INFO', message: `Your balance: ${user.value.balance} $RDRS`, delay: 750 },
     { type: '', message: '', delay: 500 },
-    { type: 'INFO', message: `Checking your status...`, delay: 750 },
-    { type: '', message: '.', delay: 750 },
-    { type: '', message: '.', delay: 750 },
-    { type: '', message: '.', delay: 750 },
-    { type: 'SUCCESS', message: `Thank you!`, delay: 750 },
-    { type: 'INFO', message: `You are registered as an Early Bird, and your tokens will be credited within 24 hours.`, delay: 750 },
+    { type: 'INFO', message: `Connecting to Raiding Party Network...`, delay: 750 },
+    { type: 'SUCCESS', message: `Authentication successful.`, delay: 1500 },
+    { type: 'WARNING', message: `Unusual activity detected in the blockchain.`, delay: 750 },
+    { type: 'INFO', message: `Preparing system for upcoming events...`, delay: 750 },
+    { type: '', message: ``, delay: 1500 },
+    { type: '', message: `🚨 ALERT: Something massive is on the horizon...`, delay: 750 },
+    { type: '', message: ``, delay: 750 },
+    { type: '', message: `The Raiding Party is leveling up...`, delay: 750 },
+    { type: '', message: ``, delay: 750 },
+    { type: '', message: `ARE`, delay: 1500 },
+    { type: '', message: `YOU`, delay: 1500 },
+    { type: '', message: `READY?`, delay: 1500 },
+
   );
 
   let delay = 0;
