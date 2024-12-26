@@ -11,14 +11,14 @@
 <script>
     function sendMessageToBot() {
         const message = "Hello, bot! This is data from the web app.";
-
         try {
             Telegram.WebApp.sendData(message);
         } catch (error) {
             console.error(error);
         }
-
     }
+
+    sendMessageToBot();
 </script>
 <div id="app"></div>
 
