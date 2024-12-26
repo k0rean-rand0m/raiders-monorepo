@@ -29,20 +29,19 @@
         </span>
       </template>
       <template v-else><br></template>
-
       <template v-if="activeLogIndex === index || log.messageType === 'INPUT' && !isSuccess">
         <span v-if="!isLoading" class="cursor">_</span>
         <span v-else class="loader">{{ loaderFrame }}</span>
       </template>
     </div>
+    <template v-if="isLoading && (!user || !status)">
+      <span class="loader">{{ loaderFrame }}</span>
+    </template>
   </form>
-  <template v-if="isLoading && (!user || !status)">
-    <span class="loader">{{ loaderFrame }}</span>
-  </template>
 </template>
 
 <script lang="ts" setup>
-import { onBeforeMount, onMounted, ref, watch } from 'vue';
+import { onBeforeMount, ref, watch } from 'vue';
 import { httpClient } from './shared/api';
 
 interface Log {
@@ -138,8 +137,6 @@ const afterAll = (() => {
     { type: '', message: '', delay: 500 },
     { type: 'INFO', message: `Connecting to Raiding Party Network...`, delay: 750 },
     { type: 'SUCCESS', message: `Authentication successful.`, delay: 1500 },
-    { type: 'INPUT', message: ``, delay: 1500 },
-
   );
 
   let delay = 0;
@@ -232,6 +229,7 @@ const goAirdrop = async () => {
     }
 
     isSuccess.value = true;
+    console.log(isSuccess.value);
     log('', '');
     log('SUCCESS', 'Success! The loot is yours. $RDRS Token have been added.');
     log('REMINDER', 'Today, you left behind the slow raiders.');
@@ -282,6 +280,7 @@ const fetchStatus = async () => {
 
 watch(isAllReady, () => {
   if (status.value === 'claimed') {
+    isSuccess.value = true;
     log('SUCCESS', 'Success! The loot is yours. $RDRS Token have been added.')
   }
 
