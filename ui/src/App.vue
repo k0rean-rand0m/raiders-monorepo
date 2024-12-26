@@ -229,7 +229,6 @@ const goAirdrop = async () => {
     }
 
     isSuccess.value = true;
-    console.log(isSuccess.value);
     log('', '');
     log('SUCCESS', 'Success! The loot is yours. $RDRS Token have been added.');
     log('REMINDER', 'Today, you left behind the slow raiders.');
@@ -272,9 +271,9 @@ const status = ref<'eligible'| 'expired' | 'claimed'>();
 
 const fetchStatus = async () => {
   try {
-    status.value = (await httpClient(`/airdrop/claim/2/status`))?.status;
+    status.value = (await httpClient(`/airdrop/claim/3/status`))?.status;
   } catch (error) {
-    log('ERROR', 'Something went wrong. Reload page or contact admins')
+    log('ERROR', 'Something went wrong. Reload page or contact admins');
   }
 }
 
@@ -289,6 +288,7 @@ watch(isAllReady, () => {
   }
 
   if (status.value === 'eligible') {
+    log('INFO', 'Enter the secret code:');
     log('INPUT', '')
   }
 });
