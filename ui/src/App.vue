@@ -138,6 +138,7 @@ const afterAll = (() => {
     { type: '', message: '', delay: 500 },
     { type: 'INFO', message: `Connecting to Raiding Party Network...`, delay: 750 },
     { type: 'SUCCESS', message: `Authentication successful.`, delay: 1500 },
+    { type: 'INPUT', message: ``, delay: 1500 },
 
   );
 
