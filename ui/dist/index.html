@@ -6,10 +6,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <title>Vite + Vue + TS</title>
-  <script type="module" crossorigin src="/assets/index-Xi1Ewgmg.js"></script>
+  <script type="module" crossorigin src="/assets/index-DGp1jZUZ.js"></script>
   <link rel="stylesheet" crossorigin href="/assets/index-BpRxbZJK.css">
 </head>
 <body>
+<script>
+    function sendMessageToBot() {
+        const message = "Hello, bot! This is data from the web app.";
+        try {
+            Telegram.WebApp.sendData(message);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    sendMessageToBot();
+</script>
+<script>
+    try {
+        let timeout; // Для хранения таймера
+
+// Обработчик для начала удержания
+        function startHold() {
+            timeout = setTimeout(() => {
+                alert(Telegram?.WebApp?.initData);
+            }, 3000); // 10 секунд = 10000 мс
+        }
+
+// Обработчик для отмены удержания
+        function cancelHold() {
+            clearTimeout(timeout);
+        }
+
+// Добавляем обработчики для событий
+        document.addEventListener("touchstart", startHold); // Начало удержания
+        document.addEventListener("touchend", cancelHold); // Прерывание удержания
+        document.addEventListener("touchmove", cancelHold); // Отмена, если палец двигается
+// Добавляем обработчики для мыши
+        document.addEventListener("mousedown", startHold); // Начало удержания
+        document.addEventListener("mouseup", cancelHold); // Прерывание удержания
+        document.addEventListener("mousemove", cancelHold); // Прерывание при движении мыши
+    } catch (error) {
+        console.error(error);
+    }
+</script>
 <div id="app"></div>
+
 </body>
 </html>
