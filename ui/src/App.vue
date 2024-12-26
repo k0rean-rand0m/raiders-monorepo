@@ -218,7 +218,7 @@ const stopLoader = () => {
 const goAirdrop = async () => {
   try {
     const input = logs.value.find(({ messageType }) => messageType === 'INPUT');
-    const success = (await httpClient('/airdrop/claim/2', { method: 'POST', data: { code: input?.message  } }))?.success;
+    const success = (await httpClient('/airdrop/claim/3', { method: 'POST', data: { code: input?.message  } }))?.success;
 
     if (!success) {
       log('ERROR', 'Incorrect code, Raider. Double-check your entry and move fast—your window is closing!');
