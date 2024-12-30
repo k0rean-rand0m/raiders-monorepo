@@ -49,6 +49,9 @@ func MessageExists(next bot.HandlerFunc) bot.HandlerFunc {
 }
 
 func fallbackHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
+	if update.Message.Chat.ID <= 0 {
+		return
+	}
 	startHandler(ctx, b, update)
 }
 
