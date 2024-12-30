@@ -26,6 +26,7 @@ func main() {
 
 	opts := []bot.Option{
 		bot.WithMessageTextHandler("/start", bot.MatchTypeExact, startHandler),
+		bot.WithDefaultHandler(fallbackHandler),
 	}
 
 	b, err := bot.New(os.Getenv("BOT_TOKEN"), opts...)
@@ -34,6 +35,10 @@ func main() {
 	}
 
 	b.Start(ctx)
+}
+
+func fallbackHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
+	startHandler(ctx, b, update)
 }
 
 func startHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
