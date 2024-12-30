@@ -1,7 +1,6 @@
 <template>
   <form
     class="console"
-    @submit.prevent="onSubmit"
   >
     <div
       v-for="(log, index) in logs"
@@ -34,7 +33,7 @@
         <span v-else class="loader">{{ loaderFrame }}</span>
       </template>
     </div>
-    <template v-if="isLoading && (!user || !status)">
+    <template v-if="isLoading && !user">
       <span class="loader">{{ loaderFrame }}</span>
     </template>
   </form>
@@ -132,11 +131,11 @@ const afterAll = (() => {
     : [{ type: 'INFO', message: 'Console synchronized', delay: 1000 }];
 
   logss.push(
-    { type: 'WELCOME', message: `Welcome, ${user.value.username}!`, delay: 1000 },
-    { type: 'INFO', message: `Your balance: ${user.value.balance} $RDRS`, delay: 750 },
+    { type: 'WELCOME', message: `Welcome, ${user.value?.username}!`, delay: 1000 },
+    { type: 'INFO', message: `Your balance: ${user.value?.balance} $RDRS`, delay: 750 },
     { type: '', message: '', delay: 500 },
     { type: 'INFO', message: `Connecting to Raiding Party Network...`, delay: 750 },
-    { type: 'SUCCESS', message: `Authentication successful.`, delay: 1500 },
+    { type: 'SUCCESS', message: `Our first USDT raid is live! Your console is active, and you’re in! 🚀`, delay: 1500 },
   );
 
   let delay = 0;
@@ -151,40 +150,6 @@ const afterAll = (() => {
     }, delay);
   });
 });
-
-function handleInputAppearance(input) {
-  input?.focus()
-
-  input.addEventListener('input', updateWidth);
-
-  function updateWidth() {
-    const inputWidth = input.value.length; // Предположим, что один символ — 10px
-    input.style.width = `${inputWidth}ch`;
-  }
-}
-
-const observer = new MutationObserver((mutationsList) => {
-  let isFound = false;
-
-  for (const mutation of [...mutationsList].reverse()) {
-    if (mutation.type === 'childList') {
-      // Ищем новые элементы <input> в добавленных узлах
-      mutation.addedNodes.forEach((node) => {
-        if (node.tagName === 'INPUT' && !isFound) {
-          isFound = true;
-          handleInputAppearance(node);
-        }
-        // Проверяем вложенные элементы, если это контейнер
-        else if (node.querySelectorAll) {
-          const inputs = node.querySelectorAll('input');
-          inputs.forEach(handleInputAppearance);
-        }
-      });
-    }
-  }
-});
-
-observer.observe(document.body, { childList: true, subtree: true, attributes: true, });
 
 const isLoading = ref(false);
 const isSuccess = ref(false);
@@ -212,47 +177,6 @@ const stopLoader = () => {
   isLoading.value = false; // Останавливаем отображение лоадера
 };
 
-const goAirdrop = async () => {
-  try {
-    const input = logs.value.find(({ messageType }) => messageType === 'INPUT');
-    const success = (await httpClient('/airdrop/claim/3', { method: 'POST', data: { code: input?.message  } }))?.success;
-
-    if (!success) {
-      log('ERROR', 'Incorrect code, Raider. Double-check your entry and move fast—your window is closing!');
-      const input = logs.value.find(({ messageType }) => messageType === 'INPUT');
-
-      if (!input) return;
-
-      input.message = '';
-
-      return;
-    }
-
-    isSuccess.value = true;
-    log('', '');
-    log('SUCCESS', 'Success! The loot is yours. $RDRS Token have been added.');
-    log('REMINDER', 'Today, you left behind the slow raiders.');
-    log('REMINDER', 'Keep going');
-    document.activeElement?.blur();
-  } catch (error) {
-    console.error(error);
-    log('ERROR', 'SYSTEM ERROR' + ' ')
-    throw new Error();
-  }
-};
-
-const onSubmit = async (): void => {
-  try {
-    startLoader();
-    await goAirdrop();
-  } catch (error) {
-    log('ERROR', 'SYSTEM ERROR' + ' ')
-    log('INPUT', '');
-  } finally {
-    stopLoader();
-  }
-};
-
 const fetchUser = async () => {
   try {
     user.value = await httpClient('/user');
@@ -267,43 +191,11 @@ const fetchUser = async () => {
   }
 };
 
-const status = ref<'eligible'| 'expired' | 'claimed'>();
-
-const fetchStatus = async () => {
-  try {
-    status.value = (await httpClient(`/airdrop/claim/3/status`))?.status;
-  } catch (error) {
-    log('ERROR', 'Something went wrong. Reload page or contact admins');
-  }
-}
-
-watch(isAllReady, () => {
-  if (status.value === 'claimed') {
-    isSuccess.value = true;
-    log('SUCCESS', 'Success! The loot is yours. $RDRS Token have been added.')
-  }
-
-  if (status.value === 'expired') {
-    log('ERROR', 'Too slow, Raider. The loot’s already been claimed. Speed is survival. Try again next time!\n')
-  }
-
-  if (status.value === 'eligible') {
-    log('INFO', 'Enter the secret code:');
-    log('INPUT', '')
-  }
-});
-
-
 onBeforeMount(async () => {
   startLoader();
   await fetchUser();
-  afterAll();
-
-  await Promise.all([
-    fetchStatus()
-  ]);
-
   stopLoader();
+  afterAll();
 });
 </script>
 
