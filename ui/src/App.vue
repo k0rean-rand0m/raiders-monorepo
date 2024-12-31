@@ -134,8 +134,7 @@ const afterAll = (() => {
     { type: 'WELCOME', message: `Welcome, ${user.value?.username}!`, delay: 1000 },
     { type: 'INFO', message: `Your balance: ${user.value?.balance} $RDRS`, delay: 750 },
     { type: '', message: '', delay: 500 },
-    { type: 'INFO', message: `Connecting to Raiding Party Network...`, delay: 750 },
-    { type: 'SUCCESS', message: `Our first USDT raid is live! Your console is active, and you’re in! 🚀`, delay: 1500 },
+    { type: 'INFO', message: `Happy New Year!`, delay: 750 },
   );
 
   let delay = 0;
