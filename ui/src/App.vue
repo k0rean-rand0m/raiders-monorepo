@@ -215,10 +215,10 @@ const stopLoader = () => {
 const goAirdrop = async () => {
   try {
     const input = logs.value.find(({ messageType }) => messageType === 'INPUT');
-    const success = (await httpClient('/airdrop/claim/3', { method: 'POST', data: { code: input?.message  } }))?.success;
+    const success = (await httpClient('/airdrop/claim/4', { method: 'POST', data: { code: input?.message  } }))?.success;
 
     if (!success) {
-      log('ERROR', 'Incorrect code, Raider. Double-check your entry and move fast—your window is closing!');
+      log('ERROR','❌ Invalid Code.<br>Check the conditions in the post carefully and hurry up, Raider – time is running out!  \nCheck the conditions in the post carefully and hurry up, Raider – time is running out!  \n');
       const input = logs.value.find(({ messageType }) => messageType === 'INPUT');
 
       if (!input) return;
@@ -230,9 +230,7 @@ const goAirdrop = async () => {
 
     isSuccess.value = true;
     log('', '');
-    log('SUCCESS', 'Success! The loot is yours. $RDRS Token have been added.');
-    log('REMINDER', 'Today, you left behind the slow raiders.');
-    log('REMINDER', 'Keep going');
+    log('SUCCESS', '✅ Code Accepted!<br>Today, you were faster than the rest. 500 $RDRS have been added to your balance.\n');
     document.activeElement?.blur();
   } catch (error) {
     console.error(error);
@@ -271,7 +269,7 @@ const status = ref<'eligible'| 'expired' | 'claimed'>();
 
 const fetchStatus = async () => {
   try {
-    status.value = (await httpClient(`/airdrop/claim/3/status`))?.status;
+    status.value = (await httpClient(`/airdrop/claim/4/status`))?.status;
   } catch (error) {
     log('ERROR', 'Something went wrong. Reload page or contact admins');
   }
@@ -280,11 +278,11 @@ const fetchStatus = async () => {
 watch(isAllReady, () => {
   if (status.value === 'claimed') {
     isSuccess.value = true;
-    log('SUCCESS', 'Success! The loot is yours. $RDRS Token have been added.')
+    log('SUCCESS', 'Today, you were faster than the rest. 500 $RDRS have been added to your balance.\n');
   }
 
   if (status.value === 'expired') {
-    log('ERROR', 'Too slow, Raider. The loot’s already been claimed. Speed is survival. Try again next time!\n')
+    log('ERROR', '🚫 Too Late, Raider.<br>The spots are all gone. But don’t despair – more raids are coming. Prepare, sharpen your skills, and be ready for the next challenge. Stay sharp, stay fast!')
   }
 
   if (status.value === 'eligible') {
