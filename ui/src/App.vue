@@ -219,7 +219,7 @@ const goAirdrop = async () => {
 
     if (!success) {
       log('ERROR','❌ Invalid Code.');
-      log('ERROR','Check the conditions in the post carefully and hurry up, Raider – time is running out!  \nCheck the conditions in the post carefully and hurry up, Raider – time is running out!  \n');
+      log('ERROR','Check the conditions in the post carefully and hurry up, Raider – time is running out!');
       const input = logs.value.find(({ messageType }) => messageType === 'INPUT');
 
       if (!input) return;
