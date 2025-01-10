@@ -25,7 +25,11 @@ func main() {
 	defer cancel()
 
 	opts := []bot.Option{
+		bot.WithMiddlewares(
+			MessageExists,
+		),
 		bot.WithMessageTextHandler("/start", bot.MatchTypeExact, startHandler),
+		bot.WithDefaultHandler(fallbackHandler),
 	}
 
 	b, err := bot.New(os.Getenv("BOT_TOKEN"), opts...)
@@ -34,6 +38,21 @@ func main() {
 	}
 
 	b.Start(ctx)
+}
+
+func MessageExists(next bot.HandlerFunc) bot.HandlerFunc {
+	return func(ctx context.Context, b *bot.Bot, update *models.Update) {
+		if update.Message != nil {
+			next(ctx, b, update)
+		}
+	}
+}
+
+func fallbackHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
+	if update.Message.Chat.ID <= 0 {
+		return
+	}
+	startHandler(ctx, b, update)
 }
 
 func startHandler(ctx context.Context, b *bot.Bot, update *models.Update) {

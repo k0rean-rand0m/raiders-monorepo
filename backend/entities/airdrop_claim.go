@@ -14,7 +14,7 @@ type AirdropClaim struct {
 }
 
 func (ac *AirdropClaim) Create(code string) (err error) {
-	if code != "R1D3R" {
+	if code != "TOK3N" {
 		return errors.New("wrong code")
 	}
 
