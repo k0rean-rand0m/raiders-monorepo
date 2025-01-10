@@ -14,7 +14,7 @@
         </span>
       </template>
       <template v-if="log.messageType !== 'INPUT' && log.currentText">
-        {{ log.currentText }}
+        <span v-html="log.currentText" />
       </template>
       <template v-if="log.messageType === 'INPUT'">
         <span class="relative">
@@ -218,7 +218,8 @@ const goAirdrop = async () => {
     const success = (await httpClient('/airdrop/claim/4', { method: 'POST', data: { code: input?.message  } }))?.success;
 
     if (!success) {
-      log('ERROR','❌ Invalid Code.<br>Check the conditions in the post carefully and hurry up, Raider – time is running out!  \nCheck the conditions in the post carefully and hurry up, Raider – time is running out!  \n');
+      log('ERROR','❌ Invalid Code.');
+      log('ERROR','Check the conditions in the post carefully and hurry up, Raider – time is running out!  \nCheck the conditions in the post carefully and hurry up, Raider – time is running out!  \n');
       const input = logs.value.find(({ messageType }) => messageType === 'INPUT');
 
       if (!input) return;
@@ -230,7 +231,8 @@ const goAirdrop = async () => {
 
     isSuccess.value = true;
     log('', '');
-    log('SUCCESS', '✅ Code Accepted!<br>Today, you were faster than the rest. 500 $RDRS have been added to your balance.\n');
+    log('SUCCESS', '✅ Code Accepted!');
+    log('SUCCESS', 'Today, you were faster than the rest. 500 $RDRS have been added to your balance.');
     document.activeElement?.blur();
   } catch (error) {
     console.error(error);
@@ -282,7 +284,8 @@ watch(isAllReady, () => {
   }
 
   if (status.value === 'expired') {
-    log('ERROR', '🚫 Too Late, Raider.<br>The spots are all gone. But don’t despair – more raids are coming. Prepare, sharpen your skills, and be ready for the next challenge. Stay sharp, stay fast!')
+    log('ERROR', '🚫 Too Late, Raider.')
+    log('ERROR', 'The spots are all gone. But don’t despair – more raids are coming. Prepare, sharpen your skills, and be ready for the next challenge. Stay sharp, stay fast!')
   }
 
   if (status.value === 'eligible') {
