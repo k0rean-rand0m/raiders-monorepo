@@ -28,7 +28,6 @@ func AirdropStatus(w http.ResponseWriter, r *http.Request) {
 	ac := e.AirdropClaim{
 		UserTgID:  initData.User.ID,
 		AirdropID: airdropId,
-		Amount:    500,
 	}
 
 	status, err := ac.Eligible()

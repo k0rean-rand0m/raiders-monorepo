@@ -14,7 +14,17 @@ type AirdropClaim struct {
 }
 
 func (ac *AirdropClaim) Create(code string) (err error) {
-	if code != "F1ND1T" {
+
+	switch code {
+	case "S00N":
+		ac.Amount = 500
+	case "S00N ":
+		ac.Amount = 500
+	case "S00N RDX":
+		ac.Amount = 1500
+	case "S00NRDX":
+		ac.Amount = 1500
+	default:
 		return errors.New("wrong code")
 	}
 
