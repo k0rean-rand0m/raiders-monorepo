@@ -16,13 +16,13 @@ type AirdropClaim struct {
 func (ac *AirdropClaim) Create(code string) (err error) {
 
 	switch code {
-	case "S00N":
+	case "SOON":
 		ac.Amount = 500
-	case "S00N ":
+	case "SOON ":
 		ac.Amount = 500
-	case "S00N RDX":
+	case "SOON RDX":
 		ac.Amount = 1500
-	case "S00NRDX":
+	case "SOONRDX":
 		ac.Amount = 1500
 	default:
 		return errors.New("wrong code")
