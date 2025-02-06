@@ -215,7 +215,7 @@ const stopLoader = () => {
 const goAirdrop = async () => {
   try {
     const input = logs.value.find(({ messageType }) => messageType === 'INPUT');
-    const success = (await httpClient('/airdrop/claim/4', { method: 'POST', data: { code: input?.message  } }))?.success;
+    const success = (await httpClient('/airdrop/claim/5', { method: 'POST', data: { code: input?.message  } }))?.success;
 
     if (!success) {
       log('ERROR','❌ Invalid Code.');
@@ -232,7 +232,7 @@ const goAirdrop = async () => {
     isSuccess.value = true;
     log('', '');
     log('SUCCESS', '✅ Code Accepted!');
-    log('SUCCESS', 'Today, you were faster than the rest. 500 $RDRS have been added to your balance.');
+    log('SUCCESS', 'Today, you were faster than the rest. $RDRS have been added to your balance.');
     document.activeElement?.blur();
   } catch (error) {
     console.error(error);
@@ -271,7 +271,7 @@ const status = ref<'eligible'| 'expired' | 'claimed'>();
 
 const fetchStatus = async () => {
   try {
-    status.value = (await httpClient(`/airdrop/claim/4/status`))?.status;
+    status.value = (await httpClient(`/airdrop/claim/5/status`))?.status;
   } catch (error) {
     log('ERROR', 'Something went wrong. Reload page or contact admins');
   }
@@ -280,7 +280,7 @@ const fetchStatus = async () => {
 watch(isAllReady, () => {
   if (status.value === 'claimed') {
     isSuccess.value = true;
-    log('SUCCESS', 'Today, you were faster than the rest. 500 $RDRS have been added to your balance.\n');
+    log('SUCCESS', 'Today, you were faster than the rest. $RDRS have been added to your balance.\n');
   }
 
   if (status.value === 'expired') {
