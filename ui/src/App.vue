@@ -1,6 +1,7 @@
 <template>
   <form
     class="console"
+    @submit.prevent="onSubmit"
   >
     <div
       v-for="(log, index) in logs"
@@ -13,7 +14,7 @@
         </span>
       </template>
       <template v-if="log.messageType !== 'INPUT' && log.currentText">
-        {{ log.currentText }}
+        <span v-html="log.currentText" />
       </template>
       <template v-if="log.messageType === 'INPUT'">
         <span class="relative">
@@ -33,7 +34,7 @@
         <span v-else class="loader">{{ loaderFrame }}</span>
       </template>
     </div>
-    <template v-if="isLoading && !user">
+    <template v-if="isLoading && (!user || !status)">
       <span class="loader">{{ loaderFrame }}</span>
     </template>
   </form>
@@ -131,10 +132,11 @@ const afterAll = (() => {
     : [{ type: 'INFO', message: 'Console synchronized', delay: 1000 }];
 
   logss.push(
-    { type: 'WELCOME', message: `Welcome, ${user.value?.username}!`, delay: 1000 },
-    { type: 'INFO', message: `Your balance: ${user.value?.balance} $RDRS`, delay: 750 },
+    { type: 'WELCOME', message: `Welcome, ${user.value.username}!`, delay: 1000 },
+    { type: 'INFO', message: `Your balance: ${user.value.balance} $RDRS`, delay: 750 },
     { type: '', message: '', delay: 500 },
-    { type: 'INFO', message: `Happy New Year!`, delay: 750 },
+    { type: 'INFO', message: `Connecting to Raiding Party Network...`, delay: 750 },
+    { type: 'SUCCESS', message: `Authentication successful.`, delay: 1500 },
   );
 
   let delay = 0;
@@ -149,6 +151,40 @@ const afterAll = (() => {
     }, delay);
   });
 });
+
+function handleInputAppearance(input) {
+  input?.focus()
+
+  input.addEventListener('input', updateWidth);
+
+  function updateWidth() {
+    const inputWidth = input.value.length; // Предположим, что один символ — 10px
+    input.style.width = `${inputWidth}ch`;
+  }
+}
+
+const observer = new MutationObserver((mutationsList) => {
+  let isFound = false;
+
+  for (const mutation of [...mutationsList].reverse()) {
+    if (mutation.type === 'childList') {
+      // Ищем новые элементы <input> в добавленных узлах
+      mutation.addedNodes.forEach((node) => {
+        if (node.tagName === 'INPUT' && !isFound) {
+          isFound = true;
+          handleInputAppearance(node);
+        }
+        // Проверяем вложенные элементы, если это контейнер
+        else if (node.querySelectorAll) {
+          const inputs = node.querySelectorAll('input');
+          inputs.forEach(handleInputAppearance);
+        }
+      });
+    }
+  }
+});
+
+observer.observe(document.body, { childList: true, subtree: true, attributes: true, });
 
 const isLoading = ref(false);
 const isSuccess = ref(false);
@@ -176,6 +212,47 @@ const stopLoader = () => {
   isLoading.value = false; // Останавливаем отображение лоадера
 };
 
+const goAirdrop = async () => {
+  try {
+    const input = logs.value.find(({ messageType }) => messageType === 'INPUT');
+    const success = (await httpClient('/airdrop/claim/4', { method: 'POST', data: { code: input?.message  } }))?.success;
+
+    if (!success) {
+      log('ERROR','❌ Invalid Code.');
+      log('ERROR','Check the conditions in the post carefully and hurry up, Raider – time is running out!');
+      const input = logs.value.find(({ messageType }) => messageType === 'INPUT');
+
+      if (!input) return;
+
+      input.message = '';
+
+      return;
+    }
+
+    isSuccess.value = true;
+    log('', '');
+    log('SUCCESS', '✅ Code Accepted!');
+    log('SUCCESS', 'Today, you were faster than the rest. 500 $RDRS have been added to your balance.');
+    document.activeElement?.blur();
+  } catch (error) {
+    console.error(error);
+    log('ERROR', 'SYSTEM ERROR' + ' ')
+    throw new Error();
+  }
+};
+
+const onSubmit = async (): void => {
+  try {
+    startLoader();
+    await goAirdrop();
+  } catch (error) {
+    log('ERROR', 'SYSTEM ERROR' + ' ')
+    log('INPUT', '');
+  } finally {
+    stopLoader();
+  }
+};
+
 const fetchUser = async () => {
   try {
     user.value = await httpClient('/user');
@@ -190,11 +267,44 @@ const fetchUser = async () => {
   }
 };
 
+const status = ref<'eligible'| 'expired' | 'claimed'>();
+
+const fetchStatus = async () => {
+  try {
+    status.value = (await httpClient(`/airdrop/claim/4/status`))?.status;
+  } catch (error) {
+    log('ERROR', 'Something went wrong. Reload page or contact admins');
+  }
+}
+
+watch(isAllReady, () => {
+  if (status.value === 'claimed') {
+    isSuccess.value = true;
+    log('SUCCESS', 'Today, you were faster than the rest. 500 $RDRS have been added to your balance.\n');
+  }
+
+  if (status.value === 'expired') {
+    log('ERROR', '🚫 Too Late, Raider.')
+    log('ERROR', 'The spots are all gone. But don’t despair – more raids are coming. Prepare, sharpen your skills, and be ready for the next challenge. Stay sharp, stay fast!')
+  }
+
+  if (status.value === 'eligible') {
+    log('INFO', 'Enter the secret code:');
+    log('INPUT', '')
+  }
+});
+
+
 onBeforeMount(async () => {
   startLoader();
   await fetchUser();
-  stopLoader();
   afterAll();
+
+  await Promise.all([
+    fetchStatus()
+  ]);
+
+  stopLoader();
 });
 </script>
 
