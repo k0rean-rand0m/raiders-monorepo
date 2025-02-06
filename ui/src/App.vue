@@ -215,7 +215,7 @@ const stopLoader = () => {
 const goAirdrop = async () => {
   try {
     const input = logs.value.find(({ messageType }) => messageType === 'INPUT');
-    const success = (await httpClient('/airdrop/claim/4', { method: 'POST', data: { code: input?.message  } }))?.success;
+    const success = (await httpClient('/airdrop/claim/5', { method: 'POST', data: { code: input?.message  } }))?.success;
 
     if (!success) {
       log('ERROR','❌ Invalid Code.');
@@ -271,7 +271,7 @@ const status = ref<'eligible'| 'expired' | 'claimed'>();
 
 const fetchStatus = async () => {
   try {
-    status.value = (await httpClient(`/airdrop/claim/4/status`))?.status;
+    status.value = (await httpClient(`/airdrop/claim/5/status`))?.status;
   } catch (error) {
     log('ERROR', 'Something went wrong. Reload page or contact admins');
   }
