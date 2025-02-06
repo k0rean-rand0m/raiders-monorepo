@@ -232,7 +232,7 @@ const goAirdrop = async () => {
     isSuccess.value = true;
     log('', '');
     log('SUCCESS', '✅ Code Accepted!');
-    log('SUCCESS', 'Today, you were faster than the rest. 500 $RDRS have been added to your balance.');
+    log('SUCCESS', 'Today, you were faster than the rest.');
     document.activeElement?.blur();
   } catch (error) {
     console.error(error);
@@ -280,7 +280,7 @@ const fetchStatus = async () => {
 watch(isAllReady, () => {
   if (status.value === 'claimed') {
     isSuccess.value = true;
-    log('SUCCESS', 'Today, you were faster than the rest. 500 $RDRS have been added to your balance.\n');
+    log('SUCCESS', 'Today, you were faster than the rest.');
   }
 
   if (status.value === 'expired') {
