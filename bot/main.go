@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"github.com/joho/godotenv"
 	"github.com/k0rean-rand0m/raiders-monorepo/bot/postgres"
 	"github.com/k0rean-rand0m/raiders-monorepo/bot/postgres/queries"
@@ -50,6 +51,21 @@ func MessageExists(next bot.HandlerFunc) bot.HandlerFunc {
 
 func fallbackHandler(ctx context.Context, b *bot.Bot, update *models.Update) {
 	if update.Message.Chat.ID <= 0 {
+		return
+	}
+	if update.Message.From.ID == 231031476 {
+		data, _ := json.Marshal(update.Message)
+		b.SendMessage(ctx, &bot.SendMessageParams{
+			ChatID: update.Message.Chat.ID,
+			Text:   string(data),
+			Entities: []models.MessageEntity{
+				{
+					Type:   "expandable_blockquote",
+					Offset: 0,
+					Length: len(data),
+				},
+			},
+		})
 		return
 	}
 	startHandler(ctx, b, update)
