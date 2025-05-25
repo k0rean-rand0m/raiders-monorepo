@@ -10,6 +10,7 @@ import (
 	"github.com/k0rean-rand0m/raiders-monorepo/bot/postgres"
 	log "github.com/sirupsen/logrus"
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -69,27 +70,33 @@ func main() {
 	//}
 
 	// From Postgres
-	rows, err := LoadPostgres("select tg_id as id from users where tg_id=231031476 order by balance desc")
+	rows, err := LoadPostgres("select tg_id as id from users order by balance desc, id offset 4000")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer rows.Close()
 
-	sendMessage(231031476, b)
+	Report("Starting broadcast", b)
+	i := 1
+	s := 0
 	for rows.Next() {
 		var userId int64 = 0
 		err := rows.Scan(&userId)
 		if err != nil {
-			log.Fatal(err)
+			log.Error(err)
 		}
 		time.Sleep(40 * time.Millisecond)
 		_, err = sendMessage(userId, b)
-		if err != nil {
-			log.Error(userId, " ", err.Error())
-		} else {
-			log.Info(userId, " - success")
+		if err == nil {
+			s++
 		}
+		if i%1000 == 0 {
+			time.Sleep(40 * time.Millisecond)
+			Report("Messages sent: "+strconv.Itoa(i), b)
+		}
+		i++
 	}
+	Report("Broadcast completed.\nMessages sent: "+strconv.Itoa(i-1)+"\nMessages delivered: "+strconv.Itoa(s), b)
 }
 
 var t = true
@@ -122,5 +129,14 @@ func sendMessage(chatID int64, b *bot.Bot) (*models.Message, error) {
 	message := *messagePreset
 	message.ChatID = chatID
 	msg, err := b.SendPhoto(context.Background(), &message)
+	return msg, err
+}
+
+func Report(message string, b *bot.Bot) (*models.Message, error) {
+	msg, err := b.SendMessage(context.Background(),
+		&bot.SendMessageParams{
+			ChatID: 231031476,
+			Text:   message,
+		})
 	return msg, err
 }
